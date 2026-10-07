@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Google Maps Route Dashed Trajectory & Flow Animations */
+@keyframes googleMapsDashPulse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -44;
+  }
+}
+
+.gmaps-trajectory-dash {
+  stroke-dasharray: 8, 14 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  animation: googleMapsDashPulse 1.6s linear infinite !important;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+}
+
+.gmaps-lead-dash {
+  stroke-dasharray: 6, 8 !important;
+  stroke-linecap: round !important;
+  animation: googleMapsDashPulse 1.2s linear infinite !important;
+}
+
+@media print {
+  /* Force exact colors in printed PDF */
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide everything outside of print root */
+  body * {
+    visibility: hidden;
+  }
+
+  #print-root,
+  #print-root * {
+    visibility: visible;
+  }
+
+  #print-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+  }
+
+  /* Prevent elements from breaking awkwardly across page cuts */
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  @page {
+    size: auto;
+    margin: 12mm 15mm;
+  }
+}

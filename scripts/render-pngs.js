@@ -1,0 +1,154 @@
+import fs from 'fs';
+import { Resvg } from '@resvg/resvg-js';
+import path from 'path';
+
+// High-fidelity SVG of the user's uploaded icon with 100% transparent background outside the squircle
+const svgMaster = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient: Rich Electric Cerulean Blue matching user image -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="40%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <!-- Subtle Vignette / Shading -->
+    <linearGradient id="overlayShade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.15" />
+    </linearGradient>
+
+    <!-- Pin Shadow on the Road Surface -->
+    <filter id="pinShadow" x="-30%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="-2" dy="8" stdDeviation="7" flood-color="#034870" flood-opacity="0.65" />
+    </filter>
+
+    <!-- Pin Center 3D Sphere Radial Gradient -->
+    <radialGradient id="sphereGrad" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </radialGradient>
+
+    <!-- Clip Path for the Rounded Squircle -->
+    <clipPath id="squircleClip">
+      <rect x="18" y="18" width="476" height="476" rx="115" ry="115" />
+    </clipPath>
+  </defs>
+
+  <!-- Blue Squircle Body (Outside this rect is 100% transparent alpha!) -->
+  <rect x="18" y="18" width="476" height="476" rx="115" ry="115" fill="url(#bgGrad)" />
+  <rect x="18" y="18" width="476" height="476" rx="115" ry="115" fill="url(#overlayShade)" />
+
+  <!-- Content clipped inside the rounded squircle -->
+  <g clip-path="url(#squircleClip)">
+    
+    <!-- Thin blueprint background accent lines (Cyan/White translucent) -->
+    <g stroke="rgba(255, 255, 255, 0.28)" stroke-width="7" stroke-linecap="round">
+      <!-- Thin diagonals across corners -->
+      <line x1="280" y1="20" x2="495" y2="235" />
+      <line x1="390" y1="220" x2="495" y2="325" />
+      <line x1="40" y1="380" x2="470" y2="380" />
+      <line x1="330" y1="410" x2="475" y2="265" />
+      <!-- Subtle cross grid behind routes -->
+      <line x1="250" y1="120" x2="440" y2="310" stroke-opacity="0.18" stroke-width="5" />
+      <line x1="130" y1="240" x2="320" y2="430" stroke-opacity="0.18" stroke-width="5" />
+    </g>
+
+    <!-- Main Solid White Roads -->
+    <g stroke="#ffffff" stroke-width="27" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Road 1: diagonal from top-left (center-ish) down to right -->
+      <line x1="175" y1="80" x2="420" y2="325" />
+      
+      <!-- Road 2: long diagonal road crossing through center from bottom-left up -->
+      <line x1="90" y1="195" x2="320" y2="425" />
+      
+      <!-- Road 3: perpendicular cross diagonal from top-center down-left -->
+      <line x1="265" y1="80" x2="75" y2="270" />
+      
+      <!-- Road 4: cross diagonal road connecting to bottom right -->
+      <line x1="245" y1="250" x2="420" y2="425" />
+    </g>
+
+    <!-- The Navigated Route (Dashed Path with Origin Ring) -->
+    
+    <!-- Origin Ring (Bottom-Left) -->
+    <circle cx="112" cy="392" r="19" fill="none" stroke="#ffffff" stroke-width="9" />
+    <circle cx="112" cy="392" r="6" fill="#0284c7" />
+
+    <!-- Dashed Route Line leading from origin to pin -->
+    <path d="M 126 378 L 246 258 L 268 259 L 298 289 L 382 205"
+          fill="none"
+          stroke="#ffffff"
+          stroke-width="13"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-dasharray="14 11" />
+
+    <!-- Route corner indicators / anchor dots -->
+    <circle cx="246" cy="258" r="6" fill="#ffffff" />
+    <circle cx="298" cy="289" r="6" fill="#ffffff" />
+
+    <!-- Orange Map Pin (Top-Right) with Drop Shadow -->
+    <g filter="url(#pinShadow)">
+      <!-- Left (Shadowed) Half of Pin (darker warm terracotta orange) -->
+      <path d="M 385 112 C 353 112 332 136 332 163 C 332 202 376 242 385 250 L 385 112 Z"
+            fill="#ea580c" />
+      
+      <!-- Right (Bright) Half of Pin (vibrant radiant orange) -->
+      <path d="M 385 112 C 417 112 438 136 438 163 C 438 202 394 242 385 250 L 385 112 Z"
+            fill="#f97316" />
+
+      <!-- Center White Sphere/Dot with 3D gradient highlight -->
+      <circle cx="385" cy="163" r="23" fill="url(#sphereGrad)" />
+      <circle cx="385" cy="163" r="23" fill="none" stroke="#ffffff" stroke-width="2.5" />
+    </g>
+
+  </g>
+</svg>`;
+
+// Render helper using @resvg/resvg-js
+function renderPng(svgString, width, height) {
+  const resvg = new Resvg(svgString, {
+    fitTo: {
+      mode: 'width',
+      value: width,
+    },
+    background: 'rgba(0, 0, 0, 0)', // 100% transparent background!
+  });
+  const pngData = resvg.render();
+  return pngData.asPng();
+}
+
+console.log('Rendering high-resolution transparent PNG icons...');
+
+// 512x512
+const png512 = renderPng(svgMaster, 512, 512);
+fs.writeFileSync('public/icons/pwa-512x512.png', png512);
+fs.writeFileSync('public/pwa-512x512.png', png512);
+fs.writeFileSync('public/icons/pwa-maskable-512x512.png', png512);
+
+// 192x192
+const png192 = renderPng(svgMaster, 192, 192);
+fs.writeFileSync('public/icons/pwa-192x192.png', png192);
+fs.writeFileSync('public/pwa-192x192.png', png192);
+
+// 180x180 (Apple Touch Icon)
+const png180 = renderPng(svgMaster, 180, 180);
+fs.writeFileSync('public/icons/apple-touch-icon.png', png180);
+fs.writeFileSync('public/apple-touch-icon.png', png180);
+
+// 64x64 & 32x32 Favicons
+const png64 = renderPng(svgMaster, 64, 64);
+fs.writeFileSync('public/icons/favicon-64x64.png', png64);
+
+const png32 = renderPng(svgMaster, 32, 32);
+fs.writeFileSync('public/favicon.ico', png32);
+fs.writeFileSync('public/favicon.png', png32);
+
+// Save SVG source in public & src
+fs.writeFileSync('public/icons/app-icon.svg', svgMaster);
+fs.writeFileSync('public/favicon.svg', svgMaster);
+fs.writeFileSync('src/assets/app-icon.svg', svgMaster);
+
+console.log('All transparent PNG icons rendered successfully!');

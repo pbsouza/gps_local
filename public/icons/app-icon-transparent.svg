@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Pin Shadow -->
+    <filter id="pinShadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.4" />
+    </filter>
+
+    <!-- Pin Inner Dot 3D Sphere Gradient -->
+    <radialGradient id="sphereGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </radialGradient>
+  </defs>
+
+  <!-- Faint Blueprint Grid in blue/slate -->
+  <g stroke="#38bdf8" stroke-opacity="0.5" stroke-width="7" stroke-linecap="round">
+    <line x1="170" y1="30" x2="480" y2="340" />
+    <line x1="280" y1="30" x2="495" y2="245" />
+    <line x1="30" y1="360" x2="450" y2="360" />
+    <line x1="340" y1="210" x2="480" y2="350" />
+    <line x1="450" y1="230" x2="350" y2="330" />
+  </g>
+
+  <!-- Main Solid White/Blue Road Grid -->
+  <g stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="175" y1="80" x2="415" y2="320" />
+    <line x1="90" y1="195" x2="315" y2="420" />
+    <line x1="260" y1="80" x2="80" y2="260" />
+    <line x1="245" y1="250" x2="415" y2="420" />
+  </g>
+
+  <!-- Origin Ring -->
+  <circle cx="110" cy="385" r="18" fill="none" stroke="#ffffff" stroke-width="9" />
+  <circle cx="110" cy="385" r="6" fill="#0284c7" />
+
+  <!-- Dashed Route Line -->
+  <path d="M 124 371 L 246 249 L 268 250 L 296 278 L 380 194"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="12"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-dasharray="14 11" />
+
+  <circle cx="246" cy="249" r="6" fill="#ffffff" />
+  <circle cx="296" cy="278" r="6" fill="#ffffff" />
+
+  <!-- Orange Map Pin -->
+  <g filter="url(#pinShadow)">
+    <path d="M 385 110 C 352 110 330 135 330 162 C 330 200 376 240 385 248 L 385 110 Z"
+          fill="#ea580c" />
+    <path d="M 385 110 C 418 110 440 135 440 162 C 440 200 394 240 385 248 L 385 110 Z"
+          fill="#f97316" />
+    <circle cx="385" cy="162" r="23" fill="url(#sphereGrad)" />
+    <circle cx="385" cy="162" r="23" fill="none" stroke="#ffffff" stroke-width="2" />
+  </g>
+</svg>

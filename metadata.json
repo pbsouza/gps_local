@@ -1,0 +1,10 @@
+{
+  "name": "GPS Rede",
+  "description": "Rastreador GPS e localizador de aparelhos em tempo real por ID com sinal de satélite, bússola de aproximação, telemetria e navegação de rotas.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
